@@ -8,8 +8,8 @@ public class VirtualJoystick :
     IBeginDragHandler, IEndDragHandler,
     IPointerDownHandler, IPointerUpHandler
 {
-    public GameObject backboard;
-    public GameObject stick;
+    public RectTransform backboard;
+    public RectTransform stick;
     public Action<Vector2> TouchListner;
 
     public float radian; // Stick이 움직일수 있는 반경
@@ -22,8 +22,8 @@ public class VirtualJoystick :
     void Start()
     {
         // 원점 보존
-        backBoardOriginPosition = backboard.transform.position;
-        stickOriginPosition = stick.transform.position;
+        backBoardOriginPosition = backboard.anchoredPosition;
+        stickOriginPosition = stick.anchoredPosition;
         
         isMoving = false;
         startPosition = backBoardOriginPosition;
@@ -42,8 +42,8 @@ public class VirtualJoystick :
         {
             isMoving = true;
             startPosition = data.position;
-            backboard.transform.position = data.position;
-            stick.transform.position = data.position;
+            backboard.position = data.position;
+            stick.position = data.position;
         }
     }
 
@@ -51,9 +51,9 @@ public class VirtualJoystick :
     {
         if (isMoving)
         {
-            // stick.transform.position = startPosition + Vector2.ClampMagnitude(data.position - startPosition, size);
+            // stick.position = startPosition + Vector2.ClampMagnitude(data.position - startPosition, size);
             Vector2 moveDirection = Vector2.ClampMagnitude(data.position - startPosition, radian);
-            stick.transform.position = startPosition + moveDirection;
+            stick.position = startPosition + moveDirection;
 
             if (TouchListner != null)
             {
@@ -67,8 +67,8 @@ public class VirtualJoystick :
     {
         isMoving = false;
 
-        backboard.transform.position = backBoardOriginPosition;
-        stick.transform.position = stickOriginPosition;
+        backboard.anchoredPosition = backBoardOriginPosition;
+        stick.anchoredPosition = stickOriginPosition;    
 
         startPosition = Vector2.zero;
         if (TouchListner != null)
