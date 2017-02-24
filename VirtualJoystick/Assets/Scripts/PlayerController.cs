@@ -3,34 +3,61 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
+    public VirtualJoystick _vjMoving;
 
-    public VirtualJoystick vjMoving;
+    Vector3 _moveDirection = Vector3.zero;
+    public float _speed = 10.0f;
+    public float _rotSpeed = 180.0f;
 
-    public VirtualJoystick vjShooting;
+    Animator _animator;
+    Rigidbody _rigidbody;
+    private void Awake()
+    {
+        _animator = GetComponent<Animator>();
+        _rigidbody = GetComponent<Rigidbody>();
+    }
 
-    Vector3 moveDirection = Vector3.zero;
-    public float speed = 10.0f;
-    
     void Start()
     {
-        vjMoving.TouchListner += SetMoveDirection;
-        vjShooting.TouchListner += SetRotation;
+        if(_vjMoving) _vjMoving.TouchListner += SetMoveDirection;
     }
 
     public void SetMoveDirection(Vector2 v)
     {
-        moveDirection.Set(v.x, 0, v.y);
-        moveDirection *= speed;
+        _moveDirection = new Vector3(v.x, 0, v.y);
+
+        if (_moveDirection == Vector3.zero)
+        {
+            _animator.SetBool("Walk", false);
+        }
+        else
+        {
+            _animator.SetBool("Walk", true);
+        }
+
+        _animator.SetFloat("Speed", _moveDirection.magnitude * _speed);
+        transform.LookAt(transform.position + _moveDirection);
+        _rigidbody.velocity = _moveDirection * _speed;
     }
 
-    public void SetRotation(Vector2 v)
+    private void Update()
     {
-        Vector3 dir = new Vector3(v.x,0,v.y);
-        transform.LookAt(transform.position + dir);
+        #if UNITY_EDITOR
+        SetMoveDirection(new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")));
+        #endif
+
+        
     }
 
     private void FixedUpdate()
+    {                
+        _rigidbody.
+        // transform.Translate(_moveDirection * _speed * Time.fixedDeltaTime,Space.World);
+    }
+
+    public void Attack()
     {
-        transform.Translate(moveDirection*Time.fixedDeltaTime,Space.World);
+        _animator.SetTrigger("Attack");
+        _moveDirection = Vector3.zero;
     }
 }

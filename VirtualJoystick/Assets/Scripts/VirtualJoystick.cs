@@ -19,6 +19,8 @@ public class VirtualJoystick :
     Vector2 backBoardOriginPosition, stickOriginPosition;
     Vector2 startPosition;
 
+    int touchCount;
+
     void Start()
     {
         // 원점 보존
@@ -28,10 +30,18 @@ public class VirtualJoystick :
         isMoving = false;
         startPosition = backBoardOriginPosition;
     }
-    
+
+    private void Update()
+    {
+        if (isMoving)
+        {
+            DragTouch(Input.mousePosition);
+
+        }
+    }
 
     // 터치 구현부
-    private void BeginTouch(ref PointerEventData data)
+    private void BeginTouch(Vector2 pos)
     {
         if (isJoystickLock)
         {
@@ -41,18 +51,18 @@ public class VirtualJoystick :
         else
         {
             isMoving = true;
-            startPosition = data.position;
-            backboard.position = data.position;
-            stick.position = data.position;
+            startPosition = pos;
+            backboard.position = pos;
+            stick.position = pos;
         }
     }
 
-    private void DragTouch(ref PointerEventData data)
+    private void DragTouch(Vector2 pos)
     {
         if (isMoving)
         {
             // stick.position = startPosition + Vector2.ClampMagnitude(data.position - startPosition, size);
-            Vector2 moveDirection = Vector2.ClampMagnitude(data.position - startPosition, radian);
+            Vector2 moveDirection = Vector2.ClampMagnitude(pos - startPosition, radian);
             stick.position = startPosition + moveDirection;
 
             if (TouchListner != null)
@@ -63,7 +73,7 @@ public class VirtualJoystick :
         }
     }
 
-    private void EndTouch(ref PointerEventData data)
+    private void EndTouch()
     {
         isMoving = false;
 
@@ -80,26 +90,26 @@ public class VirtualJoystick :
     // 터치 이벤트 매칭
     public void OnBeginDrag(PointerEventData data)
     {
-        BeginTouch(ref data);
+        BeginTouch(data.position);
     }
 
     public void OnEndDrag(PointerEventData data)
     {
-        EndTouch(ref data);
+        EndTouch();
     }
 
     public void OnPointerDown(PointerEventData data)
     {
-        BeginTouch(ref data);
+        BeginTouch(data.position);
     }
 
     public void OnDrag(PointerEventData data)
     {
-        DragTouch(ref data);
+        DragTouch(data.position);
     }
 
     public void OnPointerUp(PointerEventData data)
     {
-        EndTouch(ref data);
+        EndTouch();
     }
 }
