@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour {
-    public VirtualJoystick _vjMoving;
-
+public class InputMovement : MonoBehaviour {
     Vector3 _moveDirection = Vector3.zero;
+
     public float _speed = 10.0f;
     public float _rotSpeed = 180.0f;
 
@@ -18,27 +17,18 @@ public class PlayerController : MonoBehaviour {
         _rigidbody = GetComponent<Rigidbody>();
     }
 
-    void Start()
+    private void Update()
     {
-        if(_vjMoving) _vjMoving.TouchListner += SetMoveDirection;
-    }
-
-    public void SetMoveDirection(Vector2 v)
-    {
-        _moveDirection = new Vector3(v.x, 0, v.y);
+        _moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
         _animator.SetFloat("Speed", _moveDirection.magnitude * _speed);
+
         transform.LookAt(transform.position + _moveDirection);
         _rigidbody.velocity = _moveDirection * _speed;
     }
 
-    public void Update()
-    {
-
-    }
-
     private void FixedUpdate()
-    {   
-        transform.Translate(_moveDirection * _speed * Time.fixedDeltaTime,Space.World);
+    {
+        transform.Translate(_moveDirection * _speed * Time.fixedDeltaTime, Space.World);
     }
 }
