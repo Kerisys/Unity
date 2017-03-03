@@ -7,14 +7,11 @@ public class CPickupItem : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Item")
-        {
-            GameItem item = other.GetComponent<GameItem>();
-            if (item == null) return;
+        GameItem item = other.GetComponent<GameItem>();
+        if (item == null) return;
 
-            inven.AddItem(item.ID, item.Count);
+        inven.AddItem(item.ID, item.Count);
 
-            Destroy(other.gameObject);           
-        }
+        Destroy(other.gameObject);
     }
 }

@@ -6,5 +6,4 @@ using UnityEngine.UI;
 public class GameItem : MonoBehaviour {
     public int ID;
     public int Count;
-
 }

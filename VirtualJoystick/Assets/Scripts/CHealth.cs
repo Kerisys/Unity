@@ -6,10 +6,11 @@ using UnityEngine.UI;
 public class CHealth : MonoBehaviour {
     public int _hp;
     private int _maxHP;
-    private float _hpRatio;
+    private bool _isDie;
 
     public Image _hpBar;
-    
+    private float _hpRatio;
+
     void Awake()
     {
         _maxHP = _hp;
@@ -23,6 +24,8 @@ public class CHealth : MonoBehaviour {
         _hp = _maxHP;
 
         if (_hpBar) _hpBar.fillAmount = 1f;
+
+        _isDie = false;
     }    
 
     protected void TakeDamage(int damage)
@@ -30,6 +33,12 @@ public class CHealth : MonoBehaviour {
         _hp -= damage;
         if (_hpBar) _hpBar.fillAmount = _hp * _hpRatio;
 
-        if (_hp <= 0) SendMessage("Die");
+        if (_hp <= 0 && !_isDie)
+        {
+            SendMessage("Die", SendMessageOptions.DontRequireReceiver);
+
+            _isDie = true;
+        }
     }
+
 }

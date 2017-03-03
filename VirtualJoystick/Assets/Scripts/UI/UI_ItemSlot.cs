@@ -9,7 +9,7 @@ public class UI_ItemSlot : MonoBehaviour {
     public Text _countText;
     public int _itemCount;
         
-    public CItem item;
+    public Item item;
 
     private void Awake()
     {
@@ -18,7 +18,7 @@ public class UI_ItemSlot : MonoBehaviour {
     }
 
     void Start () {
-        if ( item ) _image.sprite = item.Sprite;
+        if ( item != null ) _image.sprite = item.Sprite;
 	}
 
     void Update()
